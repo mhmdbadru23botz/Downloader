@@ -5,6 +5,13 @@ export interface Platform {
   icon: string;
 }
 
+export interface AIAnalysis {
+  summary: string;
+  tags: string[];
+  sentiment: string;
+  smartCaption: string;
+}
+
 export interface DownloadResult {
   status: boolean;
   title?: string;
@@ -19,6 +26,7 @@ export interface DownloadResult {
     url: string;
     type: string;
   }[];
+  aiAnalysis?: AIAnalysis;
   error?: string;
 }
 
@@ -29,4 +37,12 @@ export interface HistoryItem {
   timestamp: number;
   title: string;
   thumbnail: string;
+}
+
+export interface ActiveDownload {
+  name: string;
+  progress: number;
+  totalSize?: string;
+  type: 'video' | 'audio';
+  isActive: boolean;
 }
