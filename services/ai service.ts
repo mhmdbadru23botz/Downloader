@@ -48,4 +48,4 @@ export const aiService = {
       return null;
     }
   }
-};
+}; 
