@@ -1,0 +1,8 @@
+{
+  "name": "Copy of AIVISUALS Generator Downloader",
+  "description": "A high-performance, professional multi-platform media downloader with AI-powered link analysis. Supports TikTok, YouTube, Instagram, Facebook, and more with a sleek, modern UI.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
