@@ -15,11 +15,11 @@ interface Props {
 }
 
 const statusMessages = [
-  "Inisialisasi koneksi...",
+  "Inisialisasi jalur ekstraksi...",
   "Menganalisis tautan media...",
+  "Mencoba koneksi alternatif...",
   "Mengambil metadata stream...",
   "Memproses kualitas HD...",
-  "Menyiapkan jalur unduhan...",
   "Sinkronisasi data berhasil..."
 ];
 
@@ -80,7 +80,14 @@ const DownloaderForm = forwardRef<DownloaderFormHandle, Props>(({ onResult, onSt
         onEnd();
       }, 600);
     } catch (err: any) {
-      setError(err.message || 'Gagal mengekstrak media. Mohon coba beberapa saat lagi.');
+      console.error("Downloader UI Error:", err);
+      let errorMessage = err.message || 'Gagal mengekstrak media.';
+      
+      if (errorMessage.toLowerCase().includes('failed to fetch')) {
+        errorMessage = 'Koneksi gagal. Ini biasanya disebabkan oleh AdBlocker atau pembatasan jaringan browser. Coba matikan AdBlock atau gunakan browser lain.';
+      }
+      
+      setError(errorMessage);
       setLoading(false);
       onEnd();
     }
@@ -91,11 +98,12 @@ const DownloaderForm = forwardRef<DownloaderFormHandle, Props>(({ onResult, onSt
       const text = await navigator.clipboard.readText();
       if (text) {
         setUrl(text);
-        // Smart platform detection
         const lText = text.toLowerCase();
         if (lText.includes('tiktok.com')) setPlatform('tiktok');
         else if (lText.includes('instagram.com')) setPlatform('instagram');
-        else if (lText.includes('youtube.com') || lText.includes('youtu.be')) setPlatform('ytmp4');
+        else if (lText.includes('youtube.com') || lText.includes('youtu.be')) {
+          setPlatform(text.includes('music') ? 'ytmp3' : 'ytmp4');
+        }
         else if (lText.includes('facebook.com')) setPlatform('facebook');
         else if (lText.includes('twitter.com') || lText.includes('x.com')) setPlatform('twitter');
         else if (lText.includes('spotify.com')) setPlatform('spotify');
@@ -195,7 +203,10 @@ const DownloaderForm = forwardRef<DownloaderFormHandle, Props>(({ onResult, onSt
                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                </svg>
             </div>
-            {error}
+            <div className="flex flex-col">
+              <span className="font-bold">Informasi Sistem:</span>
+              <span>{error}</span>
+            </div>
           </div>
         )}
       </form>
